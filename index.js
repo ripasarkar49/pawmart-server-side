@@ -40,6 +40,14 @@ app.get('/services',async(req,res)=>{
 const result=await petServices.find().toArray();
 res.send(result)
 })
+app.get("/services/latest", async (req, res) => {
+  const latestServices = await petServices
+    .find({})
+    .sort({ _id: -1 })  // newest first
+    .limit(6)           // latest 6 items
+    .toArray();
+  res.send(latestServices);
+});
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
