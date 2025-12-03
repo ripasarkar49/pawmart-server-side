@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json())
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster.okwqxwh.mongodb.net/?appName=Cluster`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -36,18 +36,27 @@ async function run() {
       res.send(result)
     })
     // get sevices form db
-app.get('/services',async(req,res)=>{
-const result=await petServices.find().toArray();
-res.send(result)
-})
-app.get("/services/latest", async (req, res) => {
-  const latestServices = await petServices
-    .find({})
-    .sort({ _id: -1 })  // newest first
-    .limit(6)           // latest 6 items
-    .toArray();
-  res.send(latestServices);
-});
+    app.get('/services',async(req,res)=>{
+    const result=await petServices.find().toArray();
+    res.send(result)
+    })
+    app.get("/services/latest", async (req, res) => {
+      const latestServices = await petServices
+        .find({})
+        .sort({ _id: -1 })  
+        .limit(6)           
+        .toArray();
+      res.send(latestServices);
+    });
+
+    app.get('/services/:id',async(req,res)=>{
+      const id=req.params.id;
+      console.log(id);
+      
+      const query={_id:new ObjectId(id)}
+      const result=await petServices.findOne(query);
+      res.send(result)
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
