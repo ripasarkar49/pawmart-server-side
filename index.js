@@ -92,6 +92,12 @@ async function run() {
       const result=await petServices.updateOne(query,updateService)
       res.send(result)
     })
+    app.delete('/delete/:id',async(req,res)=>{
+      const id =req.params;
+      const query={_id:new ObjectId(id)}
+      const result=await petServices.deleteOne(query)
+      res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
