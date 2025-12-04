@@ -36,10 +36,25 @@ async function run() {
       res.send(result)
     })
     // get sevices form db
-    app.get('/services',async(req,res)=>{
-    const result=await petServices.find().toArray();
-    res.send(result)
-    })
+    // app.get('/services',async(req,res)=>{
+    // const result=await petServices.find().toArray();
+    // res.send(result)
+    // })
+
+// Category Section
+      app.get('/services', async (req, res) => {
+      let query = {};
+      const category = req.query.category;
+
+      if (category) {
+    query = { category: { $regex: category, $options: "i" } };
+  }
+
+      const result = await petServices.find(query).toArray();
+      res.send(result);
+    });
+
+
     app.get("/services/latest", async (req, res) => {
       const latestServices = await petServices
         .find({})
@@ -57,6 +72,9 @@ async function run() {
       const result=await petServices.findOne(query);
       res.send(result)
     })
+
+    
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
