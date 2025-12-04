@@ -28,6 +28,7 @@ async function run() {
     await client.connect();
     const database=client.db('petservice');
     const petServices=database.collection('services')
+   
     // post or add db
     app.post('/services',async(req,res)=>{
       const data=req.body;
@@ -35,6 +36,8 @@ async function run() {
       const result=await petServices.insertOne(data);
       res.send(result)
     })
+
+    
     // get sevices form db
     // app.get('/services',async(req,res)=>{
     // const result=await petServices.find().toArray();
@@ -72,8 +75,23 @@ async function run() {
       const result=await petServices.findOne(query);
       res.send(result)
     })
-
-    
+    app.get('/my-listing',async(req,res)=>{
+       const {email}=req.query;
+       const query={email:email}
+       const result=await petServices.find(query).toArray()
+       res.send(result)
+      
+    })
+    app.put('/update/:id',async(req,res)=>{
+      const data=req.body;
+      const id =req.params;
+      const query={_id:new ObjectId(id)}
+      const updateService={
+        $set:data
+      }
+      const result=await petServices.updateOne(query,updateService)
+      res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
