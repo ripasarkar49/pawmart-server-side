@@ -28,6 +28,7 @@ async function run() {
     await client.connect();
     const database=client.db('petservice');
     const petServices=database.collection('services')
+    const orderCollection=database.collection('orders')
    
     // post or add db
     app.post('/services',async(req,res)=>{
@@ -44,15 +45,15 @@ async function run() {
     // res.send(result)
     // })
 
-// Category Section
+//get sevices form db && Category Section
       app.get('/services', async (req, res) => {
       let query = {};
       const category = req.query.category;
+// console.log(category);
 
       if (category) {
     query = { category: { $regex: category, $options: "i" } };
   }
-
       const result = await petServices.find(query).toArray();
       res.send(result);
     });
@@ -97,6 +98,15 @@ async function run() {
       const query={_id:new ObjectId(id)}
       const result=await petServices.deleteOne(query)
       res.send(result)
+
+    })
+
+    app.post('/orders',async(req,res)=>{
+      const data=req.body;
+      console.log(data);
+      const result=await orderCollection.insertOne(data)
+      res.status(201).send(result)
+      
     })
 
     // Send a ping to confirm a successful connection
