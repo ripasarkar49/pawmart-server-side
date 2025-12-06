@@ -108,6 +108,10 @@ async function run() {
       res.status(201).send(result)
       
     })
+    app.get("/orders", async (req, res) => {
+      const result = await orderCollection.find().toArray();
+      res.send(result);
+    });
     app.get('/my-orders', async (req, res) => {
       const email = req.query.email;
       const orders = await orderCollection.find({ buyerEmail: email }).toArray();
